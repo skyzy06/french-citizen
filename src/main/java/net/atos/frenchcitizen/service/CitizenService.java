@@ -21,7 +21,7 @@ public class CitizenService {
         return citizenRepository.save(citizen);
     }
 
-    public void delete(Citizen citizen) {
-        citizenRepository.delete(citizen);
+    public void deleteById(Long id) {
+        citizenRepository.deleteById(id);
     }
 }

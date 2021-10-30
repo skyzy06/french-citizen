@@ -1,7 +1,9 @@
 package net.atos.frenchcitizen.model;
 
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.Instant;
@@ -10,7 +12,7 @@ import java.time.LocalDate;
 @Data
 @Entity
 @DynamicUpdate
-@Table(name = "citizens")
+@Table(name = "citizens", indexes = {@Index(name = "username_idx", columnList = "username")})
 public class Citizen {
 
     @Id
@@ -20,7 +22,7 @@ public class Citizen {
     @Column(nullable = false, unique = true, length = 32)
     public String username;
 
-    @Column(nullable = false, length = 32)
+    @Column(nullable = false)
     public String password;
 
     @Column
@@ -42,9 +44,11 @@ public class Citizen {
     @Enumerated(EnumType.STRING)
     public Gender gender;
 
+    @CreationTimestamp
     @Column(name = "timestamp_creation", updatable = false)
     private Instant timestampCreation;
 
+    @UpdateTimestamp
     @Column(name = "timestamp_modification")
     private Instant timestampModification;
 }

@@ -1,31 +1,53 @@
 package net.atos.frenchcitizen.controller;
 
 import net.atos.frenchcitizen.model.Citizen;
+import net.atos.frenchcitizen.model.CitizenRequest;
 import net.atos.frenchcitizen.service.CitizenService;
-import org.springframework.beans.factory.annotation.Autowired;
+import net.atos.frenchcitizen.util.PasswordUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.net.URI;
+import java.util.Optional;
 
 @RestController
 public class CitizenController {
 
-    @Autowired
-    CitizenService citizenService;
+    private final CitizenService citizenService;
+    @Value("${password.encryption.salt:default}")
+    private String salt;
+
+    public CitizenController(CitizenService citizenService) {
+        this.citizenService = citizenService;
+    }
 
     @PostMapping("/citizen")
-    private Citizen createCitizen(@RequestBody Citizen citizen) {
-        return citizenService.save(citizen);
+    private ResponseEntity<String> createCitizen(@Valid @RequestBody CitizenRequest citizenRequest) {
+        String encryptedPassword = PasswordUtils.encrypt(citizenRequest.getPassword(), salt);
+        citizenRequest.setPassword(encryptedPassword);
+        Citizen citizen = citizenService.save(citizenRequest.toCitizen());
+        return ResponseEntity.created(URI.create("/citizen/" + citizen.getId())).build();
     }
 
     @GetMapping("/citizen/{id}")
-    private Citizen findCitizen(@PathVariable Long id) {
-        return citizenService.findCitizenById(id).orElse(null);
+    private ResponseEntity<Citizen> findCitizen(@PathVariable Long id) {
+        Optional<Citizen> citizen = citizenService.findCitizenById(id);
+        return citizen.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @PostMapping("/citizen/{id}")
+    private ResponseEntity<Void> updateCitizen(@PathVariable Long id, @Valid @RequestBody CitizenRequest citizenRequest) {
+        Citizen citizen = citizenRequest.toCitizen();
+        citizen.setId(id);
+        citizenService.save(citizen);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/citizen/{id}")
-    private void deleteCitizen(@PathVariable Long id) {
-        Citizen citizen = findCitizen(id);
-        if (citizen != null) {
-            citizenService.delete(citizen);
-        }
+    private ResponseEntity<Void> deleteCitizen(@PathVariable Long id) {
+        citizenService.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 }
