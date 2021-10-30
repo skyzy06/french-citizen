@@ -30,17 +30,4 @@ public class CitizenRequest {
     public String residenceCountry;
 
     public Gender gender;
-
-    public Citizen toCitizen() {
-        Citizen citizen = new Citizen();
-        citizen.setUsername(username);
-        citizen.setPassword(password);
-        citizen.setFirstname(firstname);
-        citizen.setLastname(lastname);
-        citizen.setBirthdate(birthdate);
-        citizen.setResidenceCountry(residenceCountry);
-        citizen.setGender(gender);
-
-        return citizen;
-    }
 }

@@ -1,5 +1,6 @@
 package net.atos.frenchcitizen.controller;
 
+import net.atos.frenchcitizen.mapper.CitizenMapper;
 import net.atos.frenchcitizen.model.Citizen;
 import net.atos.frenchcitizen.model.CitizenRequest;
 import net.atos.frenchcitizen.service.CitizenService;
@@ -16,18 +17,20 @@ import java.util.Optional;
 public class CitizenController {
 
     private final CitizenService citizenService;
+    private final CitizenMapper citizenMapper;
     @Value("${password.encryption.salt:default}")
     private String salt;
 
-    public CitizenController(CitizenService citizenService) {
+    public CitizenController(CitizenService citizenService, CitizenMapper citizenMapper) {
         this.citizenService = citizenService;
+        this.citizenMapper = citizenMapper;
     }
 
     @PostMapping("/citizen")
     private ResponseEntity<String> createCitizen(@Valid @RequestBody CitizenRequest citizenRequest) {
         String encryptedPassword = PasswordUtils.encrypt(citizenRequest.getPassword(), salt);
         citizenRequest.setPassword(encryptedPassword);
-        Citizen citizen = citizenService.save(citizenRequest.toCitizen());
+        Citizen citizen = citizenService.save(citizenMapper.toCitizen(citizenRequest));
         return ResponseEntity.created(URI.create("/citizen/" + citizen.getId())).build();
     }
 
@@ -39,7 +42,7 @@ public class CitizenController {
 
     @PostMapping("/citizen/{id}")
     private ResponseEntity<Void> updateCitizen(@PathVariable Long id, @Valid @RequestBody CitizenRequest citizenRequest) {
-        Citizen citizen = citizenRequest.toCitizen();
+        Citizen citizen = citizenMapper.toCitizen(citizenRequest);
         citizen.setId(id);
         citizenService.save(citizen);
         return ResponseEntity.noContent().build();
