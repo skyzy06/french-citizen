@@ -17,11 +17,15 @@ public class CitizenService {
         return citizenRepository.findById(id);
     }
 
+    public boolean existsByUsername(String username) {
+        return citizenRepository.existsByUsername(username);
+    }
+
     public Citizen save(Citizen citizen) {
         return citizenRepository.save(citizen);
     }
 
-    public void deleteById(Long id) {
-        citizenRepository.deleteById(id);
+    public void delete(Citizen citizen) {
+        citizenRepository.delete(citizen);
     }
 }
