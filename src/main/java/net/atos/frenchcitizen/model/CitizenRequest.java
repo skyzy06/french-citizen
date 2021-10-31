@@ -14,7 +14,8 @@ public class CitizenRequest {
     public String username;
 
     @NotNull
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$", message = "Minimum eight characters, at least one uppercase letter, one lowercase letter and one number")
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$",
+            message = "Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and no special character")
     public String password;
 
     public String firstname;

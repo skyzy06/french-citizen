@@ -38,7 +38,7 @@ public class Citizen {
     public LocalDate birthdate;
 
     @Column(nullable = false)
-    public String residenceCountry = "France";
+    public String residenceCountry;
 
     @Column(length = 1)
     @Enumerated(EnumType.STRING)

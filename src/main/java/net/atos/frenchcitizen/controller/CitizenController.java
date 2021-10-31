@@ -50,9 +50,15 @@ public class CitizenController {
 
     @PostMapping("/citizen/{id}")
     private ResponseEntity<Void> updateCitizen(@PathVariable Long id, @Valid @RequestBody CitizenRequest citizenRequest) {
-        if (citizenService.findCitizenById(id).isEmpty()) {
+        Optional<Citizen> previousCitizen = citizenService.findCitizenById(id);
+        if (previousCitizen.isEmpty()) {
             throw new NotFoundException(null, "This citizen does not exist");
         }
+        if (citizenService.existsByUsername(citizenRequest.getUsername()) && !previousCitizen.get().getUsername().equals(citizenRequest.getUsername())) {
+            throw new ConflictException("username", "already exists");
+        }
+        String encryptedPassword = PasswordUtils.encrypt(citizenRequest.getPassword(), salt);
+        citizenRequest.setPassword(encryptedPassword);
         Citizen citizen = citizenMapper.toCitizen(citizenRequest);
         citizen.setId(id);
         citizenService.save(citizen);
