@@ -45,6 +45,8 @@ public class CitizenController {
         if (citizen.isEmpty()) {
             throw new NotFoundException(null, "No citizen founded");
         }
+        String decryptedPassword = PasswordUtils.decrypt(citizen.get().getPassword(), salt);
+        citizen.get().setPassword(decryptedPassword);
         return ResponseEntity.ok(citizen.get());
     }
 
