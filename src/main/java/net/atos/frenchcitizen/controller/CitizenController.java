@@ -30,7 +30,7 @@ public class CitizenController {
     }
 
     @PostMapping("/citizen")
-    private ResponseEntity<String> createCitizen(@Valid @RequestBody CitizenRequest citizenRequest) {
+    public ResponseEntity<String> createCitizen(@Valid @RequestBody CitizenRequest citizenRequest) {
         if (!citizenRequest.isAdult()) {
             throw new ForbiddenException("birthdate", "Only adults can register");
         }
@@ -47,7 +47,7 @@ public class CitizenController {
     }
 
     @GetMapping("/citizen/{id}")
-    private ResponseEntity<Citizen> findCitizen(@PathVariable Long id) {
+    public ResponseEntity<Citizen> findCitizen(@PathVariable Long id) {
         Optional<Citizen> citizen = citizenService.findCitizenById(id);
         if (citizen.isEmpty()) {
             throw new NotFoundException(null, "No citizen founded");
@@ -58,7 +58,7 @@ public class CitizenController {
     }
 
     @PostMapping("/citizen/{id}")
-    private ResponseEntity<Void> updateCitizen(@PathVariable Long id, @Valid @RequestBody CitizenRequest citizenRequest) {
+    public ResponseEntity<Void> updateCitizen(@PathVariable Long id, @Valid @RequestBody CitizenRequest citizenRequest) {
         Optional<Citizen> previousCitizen = citizenService.findCitizenById(id);
         if (previousCitizen.isEmpty()) {
             throw new NotFoundException(null, "This citizen does not exist");
@@ -75,7 +75,7 @@ public class CitizenController {
     }
 
     @DeleteMapping("/citizen/{id}")
-    private ResponseEntity<Void> deleteCitizen(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteCitizen(@PathVariable Long id) {
         Optional<Citizen> citizen = citizenService.findCitizenById(id);
         if (citizen.isEmpty()) {
             throw new NotFoundException(null, "This citizen does not exist");

@@ -1,6 +1,7 @@
 package net.atos.frenchcitizen.model;
 
 import lombok.Data;
+import lombok.ToString;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -8,8 +9,10 @@ import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 
 @Data
+@ToString(onlyExplicitlyIncluded = true)
 public class CitizenRequest {
 
+    @ToString.Include
     @NotEmpty
     public String username;
 

@@ -1,6 +1,7 @@
 package net.atos.frenchcitizen.model;
 
 import lombok.Data;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -10,15 +11,18 @@ import java.time.Instant;
 import java.time.LocalDate;
 
 @Data
+@ToString(onlyExplicitlyIncluded = true)
 @Entity
 @DynamicUpdate
 @Table(name = "citizens", indexes = {@Index(name = "username_idx", columnList = "username")})
 public class Citizen {
 
+    @ToString.Include
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
 
+    @ToString.Include
     @Column(nullable = false, unique = true, length = 32)
     public String username;
 
