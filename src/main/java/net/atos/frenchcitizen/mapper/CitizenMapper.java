@@ -1,13 +1,19 @@
 package net.atos.frenchcitizen.mapper;
 
 import net.atos.frenchcitizen.model.Citizen;
-import net.atos.frenchcitizen.model.CitizenRequest;
+import net.atos.frenchcitizen.model.CitizenCreationRequest;
+import net.atos.frenchcitizen.model.CitizenResponse;
+import net.atos.frenchcitizen.model.CitizenUpdateRequest;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface CitizenMapper {
 
-    Citizen toCitizen(CitizenRequest citizenRequest);
+    Citizen toCitizen(CitizenCreationRequest citizenCreationRequest);
 
-    CitizenRequest toCitizenRequest(Citizen citizen);
+    CitizenCreationRequest toCitizenCreationRequest(Citizen citizen);
+
+    CitizenUpdateRequest toCitizenUpdateRequest(Citizen citizen);
+
+    CitizenResponse toCitizenResponse(Citizen citizen);
 }

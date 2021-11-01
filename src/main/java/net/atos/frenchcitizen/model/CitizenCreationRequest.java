@@ -10,7 +10,7 @@ import java.time.LocalDate;
 
 @Data
 @ToString(onlyExplicitlyIncluded = true)
-public class CitizenRequest {
+public class CitizenCreationRequest {
 
     @ToString.Include
     @NotEmpty
