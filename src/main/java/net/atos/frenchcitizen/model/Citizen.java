@@ -34,7 +34,7 @@ public class Citizen {
     @Column
     public String phoneNumber;
 
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     public LocalDate birthdate;
 
     @Column(nullable = false)

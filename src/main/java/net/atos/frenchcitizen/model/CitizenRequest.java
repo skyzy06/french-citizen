@@ -28,8 +28,16 @@ public class CitizenRequest {
     public LocalDate birthdate;
 
     @NotNull
-    @Pattern(regexp = "^(France)$", message = "only french citizens can registered", flags = {Pattern.Flag.CASE_INSENSITIVE})
     public String residenceCountry;
 
     public Gender gender;
+
+    public boolean isFrenchCitizen() {
+        java.util.regex.Pattern frenchPattern = java.util.regex.Pattern.compile("^(France)$", java.util.regex.Pattern.CASE_INSENSITIVE);
+        return residenceCountry != null && frenchPattern.matcher(residenceCountry).matches();
+    }
+
+    public boolean isAdult() {
+        return birthdate != null && birthdate.isBefore(LocalDate.now().minusYears(18));
+    }
 }

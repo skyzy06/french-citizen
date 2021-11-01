@@ -2,12 +2,15 @@ package net.atos.frenchcitizen.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.atos.frenchcitizen.config.TestConfig;
+import net.atos.frenchcitizen.mapper.CitizenMapper;
 import net.atos.frenchcitizen.model.Citizen;
 import net.atos.frenchcitizen.model.CitizenRequest;
 import net.atos.frenchcitizen.repository.CitizenRepository;
+import net.atos.frenchcitizen.util.PasswordUtils;
 import org.hamcrest.core.IsNull;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -24,7 +27,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@Transactional // add rollback after each test
+@Transactional
 @AutoConfigureMockMvc
 @SpringBootTest(classes = TestConfig.class)
 public class CitizenControllerTest {
@@ -36,7 +39,13 @@ public class CitizenControllerTest {
     private ObjectMapper objectMapper;
 
     @Autowired
+    private CitizenMapper citizenMapper;
+
+    @Autowired
     private CitizenRepository repository;
+
+    @Value("${encryption.password.key}")
+    private String salt;
 
     @Test
     public void testCreateCitizenOk() throws Exception {
@@ -81,13 +90,9 @@ public class CitizenControllerTest {
 
     @Test
     public void testCreateCitizenAlreadyExists() throws Exception {
-        createCitizen();
+        Citizen citizen = createCitizen();
 
-        CitizenRequest request = new CitizenRequest();
-        request.setUsername("johnny");
-        request.setPassword("Password1");
-        request.setBirthdate(LocalDate.of(1992, 12, 12));
-        request.setResidenceCountry("France");
+        CitizenRequest request = toCitizenRequest(citizen);
 
         restMockMvc.perform(post("/citizen")
                 .content(objectMapper.writeValueAsString(request))
@@ -118,6 +123,42 @@ public class CitizenControllerTest {
     }
 
     @Test
+    public void testCreateCitizenNoFrench() throws Exception {
+        CitizenRequest request = new CitizenRequest();
+        request.setUsername("johnny");
+        request.setPassword("Password1");
+        request.setBirthdate(LocalDate.now().minusYears(21));
+        request.setResidenceCountry("German");
+
+        restMockMvc.perform(post("/citizen")
+                .content(objectMapper.writeValueAsString(request))
+                .locale(Locale.FRANCE)
+                .contentType(MediaType.APPLICATION_JSON)).andDo(print())
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.field").value("residenceCountry"))
+                .andExpect(jsonPath("$.detail").value("Only french citizens can register"))
+                .andReturn();
+    }
+
+    @Test
+    public void testCreateCitizenMinorCitizen() throws Exception {
+        CitizenRequest request = new CitizenRequest();
+        request.setUsername("johnny");
+        request.setPassword("Password1");
+        request.setBirthdate(LocalDate.now().minusYears(15));
+        request.setResidenceCountry("France");
+
+        restMockMvc.perform(post("/citizen")
+                .content(objectMapper.writeValueAsString(request))
+                .locale(Locale.FRANCE)
+                .contentType(MediaType.APPLICATION_JSON)).andDo(print())
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.field").value("birthdate"))
+                .andExpect(jsonPath("$.detail").value("Only adults can register"))
+                .andReturn();
+    }
+
+    @Test
     public void testCreateCitizenNoBody() throws Exception {
         restMockMvc.perform(post("/citizen")
                 .locale(Locale.FRANCE)
@@ -132,13 +173,10 @@ public class CitizenControllerTest {
     public void testUpdateCitizenOk() throws Exception {
         Citizen citizen = createCitizen();
 
-        CitizenRequest request = new CitizenRequest();
-        request.setUsername("johnny");
+        CitizenRequest request = toCitizenRequest(citizen);
         request.setPassword("Password1");
         request.setFirstname("John");
         request.setLastname("Wick");
-        request.setBirthdate(LocalDate.of(1992, 12, 12));
-        request.setResidenceCountry("France");
 
         restMockMvc.perform(post("/citizen/" + citizen.getId())
                 .content(objectMapper.writeValueAsString(request))
@@ -156,11 +194,8 @@ public class CitizenControllerTest {
     public void testUpdateCitizenCannotDeleteMandatoryField() throws Exception {
         Citizen citizen = createCitizen();
 
-        CitizenRequest request = new CitizenRequest();
+        CitizenRequest request = toCitizenRequest(citizen);
         request.setUsername(null);
-        request.setPassword("Password1");
-        request.setBirthdate(LocalDate.of(1992, 12, 12));
-        request.setResidenceCountry("France");
 
         restMockMvc.perform(post("/citizen/" + citizen.getId())
                 .content(objectMapper.writeValueAsString(request))
@@ -186,11 +221,8 @@ public class CitizenControllerTest {
         citizenBis.setResidenceCountry("France");
         repository.save(citizenBis);
 
-        CitizenRequest request = new CitizenRequest();
-        request.setUsername("johnnyBis");
-        request.setPassword("Password1");
-        request.setBirthdate(LocalDate.of(1992, 12, 12));
-        request.setResidenceCountry("France");
+        CitizenRequest request = toCitizenRequest(citizen);
+        request.setUsername(citizenBis.getUsername());
 
         restMockMvc.perform(post("/citizen/" + citizen.getId())
                 .content(objectMapper.writeValueAsString(request))
@@ -239,7 +271,7 @@ public class CitizenControllerTest {
     }
 
     @Test
-    public void tetsGetCitizenOk() throws Exception {
+    public void testGetCitizenOk() throws Exception {
         Citizen citizen = createCitizen();
 
         restMockMvc.perform(get("/citizen/" + citizen.getId())
@@ -312,9 +344,15 @@ public class CitizenControllerTest {
     private Citizen createCitizen() {
         Citizen citizen = new Citizen();
         citizen.setUsername("johnny");
-        citizen.setPassword("Password2");
+        citizen.setPassword(PasswordUtils.encrypt("Password2", salt));
         citizen.setBirthdate(LocalDate.of(1985, 12, 11));
         citizen.setResidenceCountry("France");
         return repository.save(citizen);
+    }
+
+    private CitizenRequest toCitizenRequest(Citizen citizen) {
+        CitizenRequest request = citizenMapper.toCitizenRequest(citizen);
+        request.setPassword(PasswordUtils.decrypt(request.getPassword(), salt));
+        return request;
     }
 }

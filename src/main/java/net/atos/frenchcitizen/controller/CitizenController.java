@@ -1,6 +1,7 @@
 package net.atos.frenchcitizen.controller;
 
 import net.atos.frenchcitizen.exception.ConflictException;
+import net.atos.frenchcitizen.exception.ForbiddenException;
 import net.atos.frenchcitizen.exception.NotFoundException;
 import net.atos.frenchcitizen.mapper.CitizenMapper;
 import net.atos.frenchcitizen.model.Citizen;
@@ -20,7 +21,7 @@ public class CitizenController {
 
     private final CitizenService citizenService;
     private final CitizenMapper citizenMapper;
-    @Value("${password.encryption.salt:default}")
+    @Value("${encryption.password.key}")
     private String salt;
 
     public CitizenController(CitizenService citizenService, CitizenMapper citizenMapper) {
@@ -30,6 +31,12 @@ public class CitizenController {
 
     @PostMapping("/citizen")
     private ResponseEntity<String> createCitizen(@Valid @RequestBody CitizenRequest citizenRequest) {
+        if (!citizenRequest.isAdult()) {
+            throw new ForbiddenException("birthdate", "Only adults can register");
+        }
+        if (!citizenRequest.isFrenchCitizen()) {
+            throw new ForbiddenException("residenceCountry", "Only french citizens can register");
+        }
         if (citizenService.existsByUsername(citizenRequest.getUsername())) {
             throw new ConflictException("username", "already exists");
         }

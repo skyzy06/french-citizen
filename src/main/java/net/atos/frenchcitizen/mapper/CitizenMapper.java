@@ -8,4 +8,6 @@ import org.mapstruct.Mapper;
 public interface CitizenMapper {
 
     Citizen toCitizen(CitizenRequest citizenRequest);
+
+    CitizenRequest toCitizenRequest(Citizen citizen);
 }
