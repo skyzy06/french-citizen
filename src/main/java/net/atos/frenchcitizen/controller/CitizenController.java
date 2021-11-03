@@ -55,7 +55,7 @@ public class CitizenController {
     }
 
     @Secured
-    @PostMapping("/citizen/{id}")
+    @PatchMapping("/citizen/{id}")
     public ResponseEntity<Void> updateCitizen(@PathVariable Long id, @Valid @RequestBody CitizenUpdateRequest requestBody) {
         Citizen citizen = citizenService.findCitizenById(id).orElseThrow(() -> new NotFoundException(null, "This citizen does not exist"));
         if (citizenService.existsByUsername(requestBody.getUsername()) && !citizen.getUsername().equals(requestBody.getUsername())) {
@@ -73,7 +73,7 @@ public class CitizenController {
     }
 
     @Secured
-    @PatchMapping("/citizen/{id}")
+    @PatchMapping("/citizen/{id}/password")
     public ResponseEntity<Void> updateCitizenPassword(@PathVariable Long id, @Valid @RequestBody CitizenPasswordUpdateRequest requestBody) {
         if (requestBody.getOldPassword().equals(requestBody.password)) {
             throw new BadRequestException("password", "identical to oldPassword");

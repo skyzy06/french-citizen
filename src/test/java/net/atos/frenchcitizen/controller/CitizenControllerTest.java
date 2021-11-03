@@ -181,7 +181,7 @@ public class CitizenControllerTest {
         request.setFirstname("John");
         request.setLastname("Wick");
 
-        restMockMvc.perform(post("/citizen/" + citizen.getId())
+        restMockMvc.perform(patch("/citizen/" + citizen.getId())
                 .header("Authorization", "Bearer " + generateTokenForId(citizen.getId()))
                 .content(objectMapper.writeValueAsString(request))
                 .locale(Locale.FRANCE)
@@ -201,7 +201,7 @@ public class CitizenControllerTest {
         CitizenUpdateRequest request = toCitizenUpdateRequest(citizen);
         request.setUsername(null);
 
-        restMockMvc.perform(post("/citizen/" + citizen.getId())
+        restMockMvc.perform(patch("/citizen/" + citizen.getId())
                 .content(objectMapper.writeValueAsString(request))
                 .locale(Locale.FRANCE)
                 .contentType(MediaType.APPLICATION_JSON)).andDo(print())
@@ -228,7 +228,7 @@ public class CitizenControllerTest {
         CitizenUpdateRequest request = toCitizenUpdateRequest(citizen);
         request.setUsername(citizenBis.getUsername());
 
-        restMockMvc.perform(post("/citizen/" + citizen.getId())
+        restMockMvc.perform(patch("/citizen/" + citizen.getId())
                 .header("Authorization", "Bearer " + generateTokenForId(citizen.getId()))
                 .content(objectMapper.writeValueAsString(request))
                 .locale(Locale.FRANCE)
@@ -246,7 +246,7 @@ public class CitizenControllerTest {
     public void testUpdateCitizenNoBody() throws Exception {
         Citizen citizen = createCitizen();
 
-        restMockMvc.perform(post("/citizen/" + citizen.getId())
+        restMockMvc.perform(patch("/citizen/" + citizen.getId())
                 .locale(Locale.FRANCE)
                 .contentType(MediaType.APPLICATION_JSON)).andDo(print())
                 .andExpect(status().isBadRequest())
@@ -262,7 +262,7 @@ public class CitizenControllerTest {
         request.setFirstname("John");
         request.setLastname("Wick");
 
-        restMockMvc.perform(post("/citizen/random")
+        restMockMvc.perform(patch("/citizen/random")
                 .content(objectMapper.writeValueAsString(request))
                 .locale(Locale.FRANCE)
                 .contentType(MediaType.APPLICATION_JSON)).andDo(print())
@@ -279,7 +279,7 @@ public class CitizenControllerTest {
         request.setFirstname("John");
         request.setLastname("Wick");
 
-        restMockMvc.perform(post("/citizen/1")
+        restMockMvc.perform(patch("/citizen/1")
                 .header("Authorization", "Bearer " + generateTokenForId(2L))
                 .content(objectMapper.writeValueAsString(request))
                 .locale(Locale.FRANCE)
@@ -398,7 +398,7 @@ public class CitizenControllerTest {
         request.setOldPassword(decodedPassword);
         request.setPassword("Password1");
 
-        restMockMvc.perform(patch("/citizen/" + citizen.getId())
+        restMockMvc.perform(patch("/citizen/" + citizen.getId() + "/password")
                 .header("Authorization", "Bearer " + generateTokenForId(citizen.getId()))
                 .content(objectMapper.writeValueAsString(request))
                 .locale(Locale.FRANCE)
@@ -417,7 +417,7 @@ public class CitizenControllerTest {
         request.setOldPassword("Password1");
         request.setPassword("Password1");
 
-        restMockMvc.perform(patch("/citizen/1")
+        restMockMvc.perform(patch("/citizen/1/password")
                 .header("Authorization", "Bearer " + generateTokenForId(1L))
                 .content(objectMapper.writeValueAsString(request))
                 .locale(Locale.FRANCE)
@@ -429,7 +429,7 @@ public class CitizenControllerTest {
 
         request.setPassword("Password1!");
 
-        restMockMvc.perform(patch("/citizen/1")
+        restMockMvc.perform(patch("/citizen/1/password")
                 .content(objectMapper.writeValueAsString(request))
                 .locale(Locale.FRANCE)
                 .contentType(MediaType.APPLICATION_JSON)).andDo(print())
@@ -440,7 +440,7 @@ public class CitizenControllerTest {
 
         request.setPassword(null);
 
-        restMockMvc.perform(patch("/citizen/1")
+        restMockMvc.perform(patch("/citizen/1/password")
                 .content(objectMapper.writeValueAsString(request))
                 .locale(Locale.FRANCE)
                 .contentType(MediaType.APPLICATION_JSON)).andDo(print())
@@ -456,7 +456,7 @@ public class CitizenControllerTest {
         request.setOldPassword("Password1");
         request.setPassword("Password2");
 
-        restMockMvc.perform(patch("/citizen/0")
+        restMockMvc.perform(patch("/citizen/0/password")
                 .header("Authorization", "Bearer " + generateTokenForId(0L))
                 .content(objectMapper.writeValueAsString(request))
                 .locale(Locale.FRANCE)
@@ -475,7 +475,7 @@ public class CitizenControllerTest {
         request.setOldPassword("Password22");
         request.setPassword("Password1");
 
-        restMockMvc.perform(patch("/citizen/" + citizen.getId())
+        restMockMvc.perform(patch("/citizen/" + citizen.getId() + "/password")
                 .header("Authorization", "Bearer " + generateTokenForId(citizen.getId()))
                 .content(objectMapper.writeValueAsString(request))
                 .locale(Locale.FRANCE)
@@ -493,7 +493,7 @@ public class CitizenControllerTest {
         request.setOldPassword("Password2");
         request.setPassword("Password1");
 
-        restMockMvc.perform(patch("/citizen/1")
+        restMockMvc.perform(patch("/citizen/1/password")
                 .content(objectMapper.writeValueAsString(request))
                 .locale(Locale.FRANCE)
                 .contentType(MediaType.APPLICATION_JSON)).andDo(print())
