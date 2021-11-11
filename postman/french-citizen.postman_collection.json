@@ -21,12 +21,10 @@
 									"\r",
 									"if(pm.response.code === 201){\r",
 									"    const userId = pm.response.headers.get('location').split('/')[2];\r",
-									"    const username = JSON.parse(request.data).username;\r",
-									"    pm.collectionVariables.set('userId', userId);\r",
-									"    pm.collectionVariables.set('username', username);\r",
-									"\r",
-									"    const jwtSecret = pm.collectionVariables.get('jwt_secret') || '';\r",
-									"    pm.collectionVariables.set('userJwtToken', utils.generateToken(userId, username, jwtSecret));\r",
+									"    const requestBody = JSON.parse(request.data);\r",
+									"    pm.variables.set('userId', userId);\r",
+									"    pm.variables.set('username', requestBody.username);\r",
+									"    pm.variables.set('password', requestBody.password);\r",
 									"}\r",
 									"\r",
 									"\r",
@@ -62,6 +60,60 @@
 							"port": "8080",
 							"path": [
 								"citizen"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get token for johnny",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"if(pm.response.code === 200){\r",
+									"    pm.variables.set(\"userJwtToken\", pm.response.text());\r",
+									"}\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"{{username}}\",\r\n    \"password\": \"{{password}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/citizen/token",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"citizen",
+								"token"
 							]
 						}
 					},
@@ -256,7 +308,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"birthdate\": \"ignored\",\r\n    \"password\": \"Password1\",\r\n    \"oldPassword\": \"Azertyui1\"\r\n}",
+							"raw": "{\r\n    \"birthdate\": \"ignored\",\r\n    \"password\": \"Password1\",\r\n    \"oldPassword\": \"{{password}}\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -340,12 +392,10 @@
 									"\r",
 									"if(pm.response.code === 201){\r",
 									"    const userId = pm.response.headers.get('location').split('/')[2];\r",
-									"    const username = JSON.parse(request.data).username;\r",
-									"    pm.collectionVariables.set('userId', userId);\r",
-									"    pm.collectionVariables.set('username', username);\r",
-									"\r",
-									"    const jwtSecret = pm.collectionVariables.get('jwt_secret') || '';\r",
-									"    pm.collectionVariables.set('userJwtToken', utils.generateToken(userId, username, jwtSecret));\r",
+									"    const requestBody = JSON.parse(request.data);\r",
+									"    pm.variables.set('userId', userId);\r",
+									"    pm.variables.set('username', requestBody.username);\r",
+									"    pm.variables.set('password', requestBody.password);\r",
 									"}\r",
 									"\r",
 									"\r",
@@ -381,6 +431,60 @@
 							"port": "8080",
 							"path": [
 								"citizen"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get token for john",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"if(pm.response.code === 200){\r",
+									"    pm.variables.set(\"userJwtToken\", pm.response.text());\r",
+									"}\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"{{username}}\",\r\n    \"password\": \"{{password}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/citizen/token",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"citizen",
+								"token"
 							]
 						}
 					},
@@ -566,12 +670,10 @@
 									"\r",
 									"if(pm.response.code === 201){\r",
 									"    const userId = pm.response.headers.get('location').split('/')[2];\r",
-									"    const username = JSON.parse(request.data).username;\r",
-									"    pm.collectionVariables.set('userIdBis', userId);\r",
-									"    pm.collectionVariables.set('usernameBis', username);\r",
-									"\r",
-									"    const jwtSecret = pm.collectionVariables.get('jwt_secret') || '';\r",
-									"    pm.collectionVariables.set('userJwtTokenBis', utils.generateToken(userId, username, jwtSecret));\r",
+									"    const requestBody = JSON.parse(request.data);\r",
+									"    pm.variables.set('userIdBis', userId);\r",
+									"    pm.variables.set('usernameBis', requestBody.username);\r",
+									"    pm.variables.set('passwordBis', requestBody.password);\r",
 									"}\r",
 									"\r",
 									"\r",
@@ -665,6 +767,60 @@
 							"path": [
 								"citizen",
 								"{{userId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get token for john bis",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"if(pm.response.code === 200){\r",
+									"    pm.variables.set(\"userJwtTokenBis\", pm.response.text());\r",
+									"}\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"{{usernameBis}}\",\r\n    \"password\": \"{{passwordBis}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/citizen/token",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"citizen",
+								"token"
 							]
 						}
 					},
@@ -817,58 +973,7 @@
 			"script": {
 				"type": "text/javascript",
 				"exec": [
-					"function base64url(source) {",
-					"    // Encode in classical base64",
-					"    encodedSource = CryptoJS.enc.Base64.stringify(source)",
-					"    // Remove padding equal characters",
-					"    encodedSource = encodedSource.replace(/=+$/, '')",
-					"    // Replace characters according to base64url specifications",
-					"    encodedSource = encodedSource.replace(/\\+/g, '-')",
-					"    encodedSource = encodedSource.replace(/\\//g, '_')",
-					"    return encodedSource",
-					"}",
-					"",
-					"utils = {",
-					"    generateToken: function(userId, username, jwtSecret) {",
-					"        // JWT generation script adapted from",
-					"        // https://www.postman.com/postman/workspace/postman-team-collections/request/4630964-df7c0fff-babc-420d-ad45-e9e731d5c50f",
-					"",
-					"        // Set headers for JWT",
-					"        var header = {",
-					"            'typ': 'JWT',",
-					"            'alg': 'HS256'",
-					"        };",
-					"",
-					"        // Prepare timestamp in seconds",
-					"        var currentTimestamp = Math.floor(Date.now() / 1000)",
-					"",
-					"        var data = {",
-					"            'sub': userId,",
-					"            'ist': username,",
-					"            'iat': currentTimestamp,",
-					"            'exp': currentTimestamp + 1800, // expiry time is 30 minutes from time of creation",
-					"            'jti': 'jwt_nonce'",
-					"        }",
-					"        ",
-					"        // encode header",
-					"        var stringifiedHeader = CryptoJS.enc.Utf8.parse(JSON.stringify(header))",
-					"        var encodedHeader = base64url(stringifiedHeader)",
-					"",
-					"        // encode data",
-					"        var stringifiedData = CryptoJS.enc.Utf8.parse(JSON.stringify(data))",
-					"        var encodedData = base64url(stringifiedData)",
-					"",
-					"        // build token",
-					"        var token = `${encodedHeader}.${encodedData}`",
-					"",
-					"        // sign token",
-					"        var signature = CryptoJS.HmacSHA256(token, jwtSecret)",
-					"        signature = base64url(signature)",
-					"        var signedToken = `${token}.${signature}`",
-					"",
-					"        return signedToken;",
-					"    }",
-					"}"
+					""
 				]
 			}
 		},
@@ -880,32 +985,6 @@
 					""
 				]
 			}
-		}
-	],
-	"variable": [
-		{
-			"key": "userId",
-			"value": ""
-		},
-		{
-			"key": "username",
-			"value": ""
-		},
-		{
-			"key": "userJwtToken",
-			"value": ""
-		},
-		{
-			"key": "userIdBis",
-			"value": ""
-		},
-		{
-			"key": "usernameBis",
-			"value": ""
-		},
-		{
-			"key": "userJwtTokenBis",
-			"value": ""
 		}
 	]
 }
