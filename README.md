@@ -36,6 +36,7 @@ It will produce a `.jar` in the *target* folder. Run the following command to ru
 * *password format:* only alpha-numeric, minimum 8 characters, at least: 1 majuscule, 1 minuscule, 1 number
 * *gender format:* only M (male), F (female) or U (unknown) are accepted when provided
 * *country of residence:* only French resident can be registered
+* *username:* cannot be longer than 32 characters
 
 ### Not updatable
 The following information about a citizen cannot be change after its registration:
