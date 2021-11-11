@@ -17,6 +17,10 @@ public class CitizenService {
         return citizenRepository.findById(id);
     }
 
+    public Optional<Citizen> findCitizenByUsername(String username) {
+        return citizenRepository.findByUsername(username);
+    }
+
     public boolean existsByUsername(String username) {
         return citizenRepository.existsByUsername(username);
     }

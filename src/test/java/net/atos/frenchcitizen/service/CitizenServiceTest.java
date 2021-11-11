@@ -1,8 +1,7 @@
 package net.atos.frenchcitizen.service;
 
-import net.atos.frenchcitizen.config.TestConfig;
+import net.atos.frenchcitizen.helper.PasswordHelper;
 import net.atos.frenchcitizen.model.Citizen;
-import net.atos.frenchcitizen.util.PasswordUtils;
 import org.awaitility.Durations;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,23 +20,26 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @Transactional
 @ExtendWith(SpringExtension.class)
-@SpringBootTest(classes = TestConfig.class)
+@SpringBootTest
 public class CitizenServiceTest {
 
     @Autowired
     private CitizenService citizenService;
 
+    @Autowired
+    private PasswordHelper passwordHelper;
+
     @Test
     public void testCitizenCreationMinimal() {
         Citizen citizen = new Citizen();
         citizen.setUsername("test");
-        citizen.setPassword(PasswordUtils.encrypt("BabaYaga1", "wick"));
+        citizen.setPassword(passwordHelper.encrypt("BabaYaga1"));
         citizen.setBirthdate(LocalDate.of(1979, 10, 10));
         citizen.setResidenceCountry("France");
 
         citizen = citizenService.save(citizen);
         assertNotNull(citizen.getId());
-        assertEquals(PasswordUtils.decrypt(citizen.getPassword(), "wick"), "BabaYaga1");
+        assertEquals(passwordHelper.decrypt(citizen.getPassword()), "BabaYaga1");
         assertNotNull(citizen.getTimestampCreation());
         assertEquals(citizen.getTimestampCreation(), citizen.getTimestampModification());
     }
@@ -51,20 +53,20 @@ public class CitizenServiceTest {
         assertThrows(DataIntegrityViolationException.class, () -> citizenService.save(citizen1));
 
         Citizen citizen2 = new Citizen();
-        citizen2.setPassword(PasswordUtils.encrypt("BabaYaga1", "wick"));
+        citizen2.setPassword(passwordHelper.encrypt("BabaYaga1"));
         citizen2.setBirthdate(LocalDate.of(1979, 10, 10));
         citizen2.setResidenceCountry("France");
         assertThrows(DataIntegrityViolationException.class, () -> citizenService.save(citizen2));
 
         Citizen citizen3 = new Citizen();
         citizen3.setUsername("test");
-        citizen3.setPassword(PasswordUtils.encrypt("BabaYaga1", "wick"));
+        citizen3.setPassword(passwordHelper.encrypt("BabaYaga1"));
         citizen3.setResidenceCountry("France");
         assertThrows(DataIntegrityViolationException.class, () -> citizenService.save(citizen3));
 
         Citizen citizen4 = new Citizen();
         citizen4.setUsername("test");
-        citizen4.setPassword(PasswordUtils.encrypt("BabaYaga1", "wick"));
+        citizen4.setPassword(passwordHelper.encrypt("BabaYaga1"));
         citizen4.setBirthdate(LocalDate.of(1979, 10, 10));
         assertThrows(DataIntegrityViolationException.class, () -> citizenService.save(citizen4));
     }
@@ -73,7 +75,7 @@ public class CitizenServiceTest {
     public void testCitizenUsernameAlreadyExists() {
         Citizen citizen = new Citizen();
         citizen.setUsername("unique");
-        citizen.setPassword(PasswordUtils.encrypt("BabaYaga1", "wick"));
+        citizen.setPassword(passwordHelper.encrypt("BabaYaga1"));
         citizen.setBirthdate(LocalDate.of(1979, 10, 10));
         citizen.setResidenceCountry("France");
         citizenService.save(citizen);
@@ -84,7 +86,7 @@ public class CitizenServiceTest {
 
         Citizen citizen2 = new Citizen();
         citizen2.setUsername("unique");
-        citizen2.setPassword(PasswordUtils.encrypt("BabaYaga2", "wick"));
+        citizen2.setPassword(passwordHelper.encrypt("BabaYaga2"));
         citizen2.setBirthdate(LocalDate.of(1979, 2, 10));
         citizen2.setResidenceCountry("France");
         assertThrows(DataIntegrityViolationException.class, () -> citizenService.save(citizen2));
@@ -94,13 +96,13 @@ public class CitizenServiceTest {
     public void testCitizenUpdateTriggerModificationDate() {
         Citizen citizen = new Citizen();
         citizen.setUsername("unicorn");
-        citizen.setPassword(PasswordUtils.encrypt("BabaYaga1", "wick"));
+        citizen.setPassword(passwordHelper.encrypt("BabaYaga1"));
         citizen.setBirthdate(LocalDate.of(1979, 10, 10));
         citizen.setResidenceCountry("France");
         citizen = citizenService.save(citizen);
 
         assertNotNull(citizen.getId());
-        assertEquals(PasswordUtils.decrypt(citizen.getPassword(), "wick"), "BabaYaga1");
+        assertEquals(passwordHelper.decrypt(citizen.getPassword()), "BabaYaga1");
         assertNotNull(citizen.getTimestampCreation());
         assertEquals(citizen.getTimestampCreation(), citizen.getTimestampModification());
 

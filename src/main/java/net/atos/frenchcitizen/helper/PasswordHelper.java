@@ -1,6 +1,8 @@
-package net.atos.frenchcitizen.util;
+package net.atos.frenchcitizen.helper;
 
 import net.atos.frenchcitizen.exception.InternalServerErrorException;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
@@ -12,17 +14,17 @@ import java.util.Base64;
 /**
  * source: https://www.oodlestechnologies.com/blogs/Encrypt-And-Decrypt-In-Java/
  */
-public class PasswordUtils {
+@Component
+public class PasswordHelper {
 
     private static SecretKeySpec secretKey;
+    @Value("${encryption.password.key}")
+    private String encryptionKey;
 
-    private PasswordUtils() {
-    }
-
-    public static void setKey(String myKey) {
+    public void setKey() {
         MessageDigest sha;
         try {
-            byte[] key = myKey.getBytes(StandardCharsets.UTF_8);
+            byte[] key = encryptionKey.getBytes(StandardCharsets.UTF_8);
             sha = MessageDigest.getInstance("SHA-1");
             key = sha.digest(key);
             key = Arrays.copyOf(key, 16);
@@ -32,23 +34,23 @@ public class PasswordUtils {
         }
     }
 
-    public static String encrypt(String stringToEncrypt, String secret) {
-        setKey(secret);
+    public String encrypt(String password) {
+        setKey();
         try {
             Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
             cipher.init(Cipher.ENCRYPT_MODE, secretKey);
-            return Base64.getEncoder().encodeToString(cipher.doFinal(stringToEncrypt.getBytes(StandardCharsets.UTF_8)));
+            return Base64.getEncoder().encodeToString(cipher.doFinal(password.getBytes(StandardCharsets.UTF_8)));
         } catch (Exception e) {
             throw new InternalServerErrorException("encrypt", e.getMessage());
         }
     }
 
-    public static String decrypt(String stringToDecrypt, String secret) {
-        setKey(secret);
+    public String decrypt(String encodedPassword) {
+        setKey();
         try {
             Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5PADDING");
             cipher.init(Cipher.DECRYPT_MODE, secretKey);
-            return new String(cipher.doFinal(Base64.getDecoder().decode(stringToDecrypt)));
+            return new String(cipher.doFinal(Base64.getDecoder().decode(encodedPassword)));
         } catch (Exception e) {
             throw new InternalServerErrorException("decrypt", e.getMessage());
         }

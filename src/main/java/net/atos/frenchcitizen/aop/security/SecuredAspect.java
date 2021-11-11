@@ -1,13 +1,13 @@
 package net.atos.frenchcitizen.aop.security;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import net.atos.frenchcitizen.exception.UnauthorizedException;
+import net.atos.frenchcitizen.helper.TokenHelper;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.reflect.CodeSignature;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -18,8 +18,14 @@ import javax.servlet.http.HttpServletRequest;
 @Aspect
 @Component
 public class SecuredAspect {
+    private static final String AUTHORIZATION_HEADER = "Authorization";
+    private static final String TOKEN_BEARER_PREFIX = "Bearer ";
+
+    @Autowired
+    private TokenHelper tokenHelper;
+
     @Before("execution(* net.atos.frenchcitizen.controller..*(..)) && @annotation(secured)")
-    public void securedIdEnsResponse(JoinPoint jp, Secured secured) throws NoSuchFieldException, IllegalAccessException {
+    public void securedIdEnsResponse(JoinPoint jp, Secured secured) {
         Object[] args = jp.getArgs();
         CodeSignature codeSignature = (CodeSignature) jp.getSignature();
         String[] sigParamNames = codeSignature.getParameterNames();
@@ -33,32 +39,24 @@ public class SecuredAspect {
     }
 
     private void checkAccess(String id) {
+        String authHeader = getAuthorizationBearer();
+        if (authHeader == null) {
+            throw new UnauthorizedException(null, "Invalid authorization header");
+        }
+        DecodedJWT jwt = tokenHelper.decode(authHeader);
+        if (!tokenHelper.isValid(jwt) || !jwt.getSubject().equals(id)) {
+            throw new UnauthorizedException(null, "Unauthorized access");
+        }
+    }
+
+    private String getAuthorizationBearer() {
         HttpServletRequest servletRequest = getCurrentHttpRequest();
         if (servletRequest == null) {
-            return;
-        }
-
-        String authHeader = servletRequest.getHeader("Authorization");
-        if (authHeader != null && authHeader.length() > "Bearer ".length()) {
-            DecodedJWT jwt = decode(authHeader.substring("Bearer ".length()));
-            if (jwt != null && jwt.getSubject() != null) {
-                if (jwt.getSubject().equals(id)) {
-                    return;
-                }
-                throw new UnauthorizedException(null, "Unauthorized access");
-            }
-        }
-        throw new UnauthorizedException(null, "Invalid authorization header");
-    }
-
-    private DecodedJWT decode(String token) {
-        try {
-            return JWT.decode(token);
-        } catch (JWTDecodeException ex) {
             return null;
         }
+        String authHeader = servletRequest.getHeader(AUTHORIZATION_HEADER);
+        return authHeader == null ? null : authHeader.substring(TOKEN_BEARER_PREFIX.length());
     }
-
 
     private HttpServletRequest getCurrentHttpRequest() {
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
