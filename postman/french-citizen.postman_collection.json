@@ -25,12 +25,7 @@
 									"    pm.variables.set('userId', userId);\r",
 									"    pm.variables.set('username', requestBody.username);\r",
 									"    pm.variables.set('password', requestBody.password);\r",
-									"}\r",
-									"\r",
-									"\r",
-									"\r",
-									"\r",
-									""
+									"}"
 								],
 								"type": "text/javascript"
 							}
@@ -52,12 +47,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/citizen",
-							"protocol": "http",
+							"raw": "{{hostUrl}}/citizen",
 							"host": [
-								"localhost"
+								"{{hostUrl}}"
 							],
-							"port": "8080",
 							"path": [
 								"citizen"
 							]
@@ -78,12 +71,7 @@
 									"\r",
 									"if(pm.response.code === 200){\r",
 									"    pm.variables.set(\"userJwtToken\", pm.response.text());\r",
-									"}\r",
-									"\r",
-									"\r",
-									"\r",
-									"\r",
-									""
+									"}"
 								],
 								"type": "text/javascript"
 							}
@@ -105,12 +93,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/citizen/token",
-							"protocol": "http",
+							"raw": "{{hostUrl}}/citizen/token",
 							"host": [
-								"localhost"
+								"{{hostUrl}}"
 							],
-							"port": "8080",
 							"path": [
 								"citizen",
 								"token"
@@ -158,12 +144,10 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/citizen/{{userId}}",
-							"protocol": "http",
+							"raw": "{{hostUrl}}/citizen/{{userId}}",
 							"host": [
-								"localhost"
+								"{{hostUrl}}"
 							],
-							"port": "8080",
 							"path": [
 								"citizen",
 								"{{userId}}"
@@ -210,12 +194,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/citizen/{{userId}}",
-							"protocol": "http",
+							"raw": "{{hostUrl}}/citizen/{{userId}}",
 							"host": [
-								"localhost"
+								"{{hostUrl}}"
 							],
-							"port": "8080",
 							"path": [
 								"citizen",
 								"{{userId}}"
@@ -264,12 +246,10 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/citizen/{{userId}}",
-							"protocol": "http",
+							"raw": "{{hostUrl}}/citizen/{{userId}}",
 							"host": [
-								"localhost"
+								"{{hostUrl}}"
 							],
-							"port": "8080",
 							"path": [
 								"citizen",
 								"{{userId}}"
@@ -316,12 +296,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/citizen/{{userId}}/password",
-							"protocol": "http",
+							"raw": "{{hostUrl}}/citizen/{{userId}}/password",
 							"host": [
-								"localhost"
+								"{{hostUrl}}"
 							],
-							"port": "8080",
 							"path": [
 								"citizen",
 								"{{userId}}",
@@ -360,12 +338,10 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/citizen/{{userId}}",
-							"protocol": "http",
+							"raw": "{{hostUrl}}/citizen/{{userId}}",
 							"host": [
-								"localhost"
+								"{{hostUrl}}"
 							],
-							"port": "8080",
 							"path": [
 								"citizen",
 								"{{userId}}"
@@ -377,139 +353,1016 @@
 			]
 		},
 		{
+			"name": "Access control",
+			"item": [
+				{
+					"name": "prepare",
+					"item": [
+						{
+							"name": "Create john",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"\r",
+											"if(pm.response.code === 201){\r",
+											"    const userId = pm.response.headers.get('location').split('/')[2];\r",
+											"    const requestBody = JSON.parse(request.data);\r",
+											"    pm.variables.set('userId', userId);\r",
+											"    pm.variables.set('username', requestBody.username);\r",
+											"    pm.variables.set('password', requestBody.password);\r",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"john.wick\",\r\n    \"firstname\" : \"John\",\r\n    \"lastname\" : \"Wick\",\r\n    \"residenceCountry\": \"France\",\r\n    \"birthdate\": \"1992-10-01\",\r\n    \"password\": \"Azertyui1\",\r\n    \"gender\": \"M\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{hostUrl}}/citizen",
+									"host": [
+										"{{hostUrl}}"
+									],
+									"path": [
+										"citizen"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create john bis",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"\r",
+											"if(pm.response.code === 201){\r",
+											"    const userId = pm.response.headers.get('location').split('/')[2];\r",
+											"    const requestBody = JSON.parse(request.data);\r",
+											"    pm.variables.set('userIdBis', userId);\r",
+											"    pm.variables.set('usernameBis', requestBody.username);\r",
+											"    pm.variables.set('passwordBis', requestBody.password);\r",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"john.wick.bis\",\r\n    \"firstname\" : \"John\",\r\n    \"lastname\" : \"Wick\",\r\n    \"residenceCountry\": \"France\",\r\n    \"birthdate\": \"1992-10-01\",\r\n    \"password\": \"Azertyui1\",\r\n    \"gender\": \"M\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{hostUrl}}/citizen",
+									"host": [
+										"{{hostUrl}}"
+									],
+									"path": [
+										"citizen"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get token for john",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"if(pm.response.code === 200){\r",
+											"    pm.variables.set(\"userJwtToken\", pm.response.text());\r",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"{{username}}\",\r\n    \"password\": \"{{password}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{hostUrl}}/citizen/token",
+									"host": [
+										"{{hostUrl}}"
+									],
+									"path": [
+										"citizen",
+										"token"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get token for john bis",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"if(pm.response.code === 200){\r",
+											"    pm.variables.set(\"userJwtTokenBis\", pm.response.text());\r",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"{{usernameBis}}\",\r\n    \"password\": \"{{passwordBis}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{hostUrl}}/citizen/token",
+									"host": [
+										"{{hostUrl}}"
+									],
+									"path": [
+										"citizen",
+										"token"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "test",
+					"item": [
+						{
+							"name": "Find john no token",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 401\", () => {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Error detail is present\", () => {\r",
+											"    const responseJson = pm.response.json();\r",
+											"    pm.expect(responseJson.field).to.be.null;\r",
+											"    pm.expect(responseJson.detail).to.eql(\"Invalid authorization header\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{hostUrl}}/citizen/{{userId}}",
+									"host": [
+										"{{hostUrl}}"
+									],
+									"path": [
+										"citizen",
+										"{{userId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Find john expired token",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 401\", () => {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Error detail is present\", () => {\r",
+											"    const responseJson = pm.response.json();\r",
+											"    pm.expect(responseJson.field).to.be.null;\r",
+											"    pm.expect(responseJson.detail).to.eql(\"Unauthorized access\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{expiredJohnToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{hostUrl}}/citizen/{{userId}}",
+									"host": [
+										"{{hostUrl}}"
+									],
+									"path": [
+										"citizen",
+										"{{userId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Find john wrong token",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 401\", () => {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Error detail is present\", () => {\r",
+											"    const responseJson = pm.response.json();\r",
+											"    pm.expect(responseJson.field).to.be.null;\r",
+											"    pm.expect(responseJson.detail).to.eql(\"Unauthorized access\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{userJwtTokenBis}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{hostUrl}}/citizen/{{userId}}",
+									"host": [
+										"{{hostUrl}}"
+									],
+									"path": [
+										"citizen",
+										"{{userId}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "clean",
+					"item": [
+						{
+							"name": "Delete john bis",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 204\", function () {\r",
+											"    pm.response.to.have.status(204);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{userJwtTokenBis}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{hostUrl}}/citizen/{{userIdBis}}",
+									"host": [
+										"{{hostUrl}}"
+									],
+									"path": [
+										"citizen",
+										"{{userIdBis}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete john",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 204\", function () {\r",
+											"    pm.response.to.have.status(204);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{userJwtToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{hostUrl}}/citizen/{{userId}}",
+									"host": [
+										"{{hostUrl}}"
+									],
+									"path": [
+										"citizen",
+										"{{userId}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
 			"name": "Bad updating",
 			"item": [
 				{
-					"name": "Create john",
-					"event": [
+					"name": "prepare",
+					"item": [
 						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 201\", function () {\r",
-									"    pm.response.to.have.status(201);\r",
-									"});\r",
-									"\r",
-									"if(pm.response.code === 201){\r",
-									"    const userId = pm.response.headers.get('location').split('/')[2];\r",
-									"    const requestBody = JSON.parse(request.data);\r",
-									"    pm.variables.set('userId', userId);\r",
-									"    pm.variables.set('username', requestBody.username);\r",
-									"    pm.variables.set('password', requestBody.password);\r",
-									"}\r",
-									"\r",
-									"\r",
-									"\r",
-									"\r",
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "noauth"
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"username\": \"john.wick\",\r\n    \"firstname\" : \"John\",\r\n    \"lastname\" : \"Wick\",\r\n    \"residenceCountry\": \"France\",\r\n    \"birthdate\": \"1992-10-01\",\r\n    \"password\": \"Azertyui1\",\r\n    \"gender\": \"M\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
+							"name": "Create john",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"\r",
+											"if(pm.response.code === 201){\r",
+											"    const userId = pm.response.headers.get('location').split('/')[2];\r",
+											"    const requestBody = JSON.parse(request.data);\r",
+											"    pm.variables.set('userId', userId);\r",
+											"    pm.variables.set('username', requestBody.username);\r",
+											"    pm.variables.set('password', requestBody.password);\r",
+											"}"
+										],
+										"type": "text/javascript"
+									}
 								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:8080/citizen",
-							"protocol": "http",
-							"host": [
-								"localhost"
 							],
-							"port": "8080",
-							"path": [
-								"citizen"
-							]
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"john.wick\",\r\n    \"firstname\" : \"John\",\r\n    \"lastname\" : \"Wick\",\r\n    \"residenceCountry\": \"France\",\r\n    \"birthdate\": \"1992-10-01\",\r\n    \"password\": \"Azertyui1\",\r\n    \"gender\": \"M\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{hostUrl}}/citizen",
+									"host": [
+										"{{hostUrl}}"
+									],
+									"path": [
+										"citizen"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create john bis",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"\r",
+											"if(pm.response.code === 201){\r",
+											"    const userId = pm.response.headers.get('location').split('/')[2];\r",
+											"    const requestBody = JSON.parse(request.data);\r",
+											"    pm.variables.set('userIdBis', userId);\r",
+											"    pm.variables.set('usernameBis', requestBody.username);\r",
+											"    pm.variables.set('passwordBis', requestBody.password);\r",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"john.wick.bis\",\r\n    \"firstname\" : \"John\",\r\n    \"lastname\" : \"Wick\",\r\n    \"residenceCountry\": \"France\",\r\n    \"birthdate\": \"1992-10-01\",\r\n    \"password\": \"Azertyui1\",\r\n    \"gender\": \"M\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{hostUrl}}/citizen",
+									"host": [
+										"{{hostUrl}}"
+									],
+									"path": [
+										"citizen"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get token for john",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"if(pm.response.code === 200){\r",
+											"    pm.variables.set(\"userJwtToken\", pm.response.text());\r",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"{{username}}\",\r\n    \"password\": \"{{password}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{hostUrl}}/citizen/token",
+									"host": [
+										"{{hostUrl}}"
+									],
+									"path": [
+										"citizen",
+										"token"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get token for john bis",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"if(pm.response.code === 200){\r",
+											"    pm.variables.set(\"userJwtTokenBis\", pm.response.text());\r",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"{{usernameBis}}\",\r\n    \"password\": \"{{passwordBis}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{hostUrl}}/citizen/token",
+									"host": [
+										"{{hostUrl}}"
+									],
+									"path": [
+										"citizen",
+										"token"
+									]
+								}
+							},
+							"response": []
 						}
-					},
-					"response": []
+					]
 				},
 				{
-					"name": "Get token for john",
-					"event": [
+					"name": "test",
+					"item": [
 						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});\r",
-									"\r",
-									"if(pm.response.code === 200){\r",
-									"    pm.variables.set(\"userJwtToken\", pm.response.text());\r",
-									"}\r",
-									"\r",
-									"\r",
-									"\r",
-									"\r",
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "noauth"
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"username\": \"{{username}}\",\r\n    \"password\": \"{{password}}\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
+							"name": "Find john",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", () => {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Citizen is John\", () => {\r",
+											"    const responseJson = pm.response.json();\r",
+											"    pm.expect(responseJson.username).to.eql(\"john.wick\");\r",
+											"    pm.expect(responseJson.birthdate).to.eql(\"1992-10-01\");\r",
+											"    pm.expect(responseJson.residenceCountry).to.eql(\"France\");\r",
+											"    pm.expect(responseJson.gender).to.eql(\"M\");\r",
+											"    pm.expect(responseJson.firstname).to.eql(\"John\");\r",
+											"    pm.expect(responseJson.lastname).to.eql(\"Wick\");\r",
+											"    pm.expect(responseJson).to.not.have.property('password');\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
 								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:8080/citizen/token",
-							"protocol": "http",
-							"host": [
-								"localhost"
 							],
-							"port": "8080",
-							"path": [
-								"citizen",
-								"token"
-							]
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{userJwtToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{hostUrl}}/citizen/{{userId}}",
+									"host": [
+										"{{hostUrl}}"
+									],
+									"path": [
+										"citizen",
+										"{{userId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Try remove username",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Error detail is present\", () => {\r",
+											"    const responseJson = pm.response.json();\r",
+											"    pm.expect(responseJson.field).to.eql(\"username\");\r",
+											"    pm.expect(responseJson.detail).to.eql(\"must not be empty\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{userJwtToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"\",\r\n    \"firstname\": \"John\",\r\n    \"lastname\": \"Wick\",\r\n    \"phoneNumber\": \"0606060606\",\r\n    \"gender\": \"M\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{hostUrl}}/citizen/{{userId}}",
+									"host": [
+										"{{hostUrl}}"
+									],
+									"path": [
+										"citizen",
+										"{{userId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Try to use john bis username",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 409\", function () {\r",
+											"    pm.response.to.have.status(409);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Error detail is present\", () => {\r",
+											"    const responseJson = pm.response.json();\r",
+											"    pm.expect(responseJson.field).to.eql(\"username\");\r",
+											"    pm.expect(responseJson.detail).to.eql(\"already exists\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{userJwtToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"{{usernameBis}}\",\r\n    \"firstname\": \"John\",\r\n    \"lastname\": \"Wick\",\r\n    \"gender\": \"M\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{hostUrl}}/citizen/{{userId}}",
+									"host": [
+										"{{hostUrl}}"
+									],
+									"path": [
+										"citizen",
+										"{{userId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Find john no change",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", () => {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Phone number not added\", () => {\r",
+											"    const responseJson = pm.response.json();\r",
+											"    pm.expect(responseJson.username).to.eql(\"john.wick\");\r",
+											"    pm.expect(responseJson.birthdate).to.eql(\"1992-10-01\");\r",
+											"    pm.expect(responseJson.residenceCountry).to.eql(\"France\");\r",
+											"    pm.expect(responseJson.gender).to.eql(\"M\");\r",
+											"    pm.expect(responseJson.firstname).to.eql(\"John\");\r",
+											"    pm.expect(responseJson.lastname).to.eql(\"Wick\");\r",
+											"    pm.expect(responseJson.phoneNumber).to.be.null;\r",
+											"    pm.expect(responseJson).to.not.have.property('password');\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{userJwtToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{hostUrl}}/citizen/{{userId}}",
+									"host": [
+										"{{hostUrl}}"
+									],
+									"path": [
+										"citizen",
+										"{{userId}}"
+									]
+								}
+							},
+							"response": []
 						}
-					},
-					"response": []
+					]
 				},
 				{
-					"name": "Find john",
+					"name": "clean",
+					"item": [
+						{
+							"name": "Delete john bis",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 204\", function () {\r",
+											"    pm.response.to.have.status(204);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{userJwtTokenBis}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{hostUrl}}/citizen/{{userIdBis}}",
+									"host": [
+										"{{hostUrl}}"
+									],
+									"path": [
+										"citizen",
+										"{{userIdBis}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Can use john bis username",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 204\", function () {\r",
+											"    pm.response.to.have.status(204);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{userJwtToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"{{usernameBis}}\",\r\n    \"firstname\": \"John\",\r\n    \"lastname\": \"Wick\",\r\n    \"gender\": \"M\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{hostUrl}}/citizen/{{userId}}",
+									"host": [
+										"{{hostUrl}}"
+									],
+									"path": [
+										"citizen",
+										"{{userId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete john",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 204\", function () {\r",
+											"    pm.response.to.have.status(204);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{userJwtToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{hostUrl}}/citizen/{{userId}}",
+									"host": [
+										"{{hostUrl}}"
+									],
+									"path": [
+										"citizen",
+										"{{userId}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Input format control",
+			"item": [
+				{
+					"name": "Create john bad birthdate",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", () => {\r",
-									"    pm.response.to.have.status(200);\r",
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
 									"});\r",
 									"\r",
-									"pm.test(\"Citizen is John\", () => {\r",
+									"pm.test(\"Error detail is present\", () => {\r",
 									"    const responseJson = pm.response.json();\r",
-									"    pm.expect(responseJson.username).to.eql(\"john.wick\");\r",
-									"    pm.expect(responseJson.birthdate).to.eql(\"1992-10-01\");\r",
-									"    pm.expect(responseJson.residenceCountry).to.eql(\"France\");\r",
-									"    pm.expect(responseJson.gender).to.eql(\"M\");\r",
-									"    pm.expect(responseJson.firstname).to.eql(\"John\");\r",
-									"    pm.expect(responseJson.lastname).to.eql(\"Wick\");\r",
-									"    pm.expect(responseJson).to.not.have.property('password');\r",
+									"    pm.expect(responseJson.field).to.eql(\"birthdate\");\r",
+									"    pm.expect(responseJson.detail).to.eql(\"1992-13-01\");\r",
 									"});"
 								],
 								"type": "text/javascript"
@@ -518,34 +1371,129 @@
 					],
 					"request": {
 						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{userJwtToken}}",
-									"type": "string"
-								}
-							]
+							"type": "noauth"
 						},
-						"method": "GET",
+						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"john.wick\",\r\n    \"firstname\" : \"John\",\r\n    \"lastname\" : \"Wick\",\r\n    \"residenceCountry\": \"France\",\r\n    \"birthdate\": \"1992-13-01\",\r\n    \"password\": \"Azertyui1\",\r\n    \"gender\": \"M\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "http://localhost:8080/citizen/{{userId}}",
-							"protocol": "http",
+							"raw": "{{hostUrl}}/citizen",
 							"host": [
-								"localhost"
+								"{{hostUrl}}"
 							],
-							"port": "8080",
 							"path": [
-								"citizen",
-								"{{userId}}"
+								"citizen"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "Try remove username",
+					"name": "Create john not french",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 403\", function () {\r",
+									"    pm.response.to.have.status(403);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Error detail is present\", () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson.field).to.eql(\"birthdate\");\r",
+									"    pm.expect(responseJson.detail).to.eql(\"Only adults can register\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"john.wick\",\r\n    \"residenceCountry\": \"France\",\r\n    \"birthdate\": \"2020-10-01\",\r\n    \"password\": \"Azertyui1\",\r\n    \"gender\": \"M\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostUrl}}/citizen",
+							"host": [
+								"{{hostUrl}}"
+							],
+							"path": [
+								"citizen"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create john not adult",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 403\", function () {\r",
+									"    pm.response.to.have.status(403);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Error detail is present\", () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson.field).to.eql(\"residenceCountry\");\r",
+									"    pm.expect(responseJson.detail).to.eql(\"Only french citizens can register\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"john.wick\",\r\n    \"residenceCountry\": \"German\",\r\n    \"birthdate\": \"1992-10-01\",\r\n    \"password\": \"Azertyui1\",\r\n    \"gender\": \"M\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostUrl}}/citizen",
+							"host": [
+								"{{hostUrl}}"
+							],
+							"path": [
+								"citizen"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create john username missing",
 					"event": [
 						{
 							"listen": "test",
@@ -567,20 +1515,13 @@
 					],
 					"request": {
 						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{userJwtToken}}",
-									"type": "string"
-								}
-							]
+							"type": "noauth"
 						},
-						"method": "PATCH",
+						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"username\": \"\",\r\n    \"firstname\": \"John\",\r\n    \"lastname\": \"Wick\",\r\n    \"phoneNumber\": \"0606060606\",\r\n    \"gender\": \"M\"\r\n}",
+							"raw": "{\r\n    \"firstname\" : \"John\",\r\n    \"lastname\" : \"Wick\",\r\n    \"residenceCountry\": \"France\",\r\n    \"birthdate\": \"1992-10-01\",\r\n    \"password\": \"Azertyui1\",\r\n    \"gender\": \"M\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -588,98 +1529,33 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/citizen/{{userId}}",
-							"protocol": "http",
+							"raw": "{{hostUrl}}/citizen",
 							"host": [
-								"localhost"
+								"{{hostUrl}}"
 							],
-							"port": "8080",
 							"path": [
-								"citizen",
-								"{{userId}}"
+								"citizen"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "Find john no change",
+					"name": "Create john username too long",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", () => {\r",
-									"    pm.response.to.have.status(200);\r",
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
 									"});\r",
 									"\r",
-									"pm.test(\"Phone number not added\", () => {\r",
+									"pm.test(\"Error detail is present\", () => {\r",
 									"    const responseJson = pm.response.json();\r",
-									"    pm.expect(responseJson.username).to.eql(\"john.wick\");\r",
-									"    pm.expect(responseJson.birthdate).to.eql(\"1992-10-01\");\r",
-									"    pm.expect(responseJson.residenceCountry).to.eql(\"France\");\r",
-									"    pm.expect(responseJson.gender).to.eql(\"M\");\r",
-									"    pm.expect(responseJson.firstname).to.eql(\"John\");\r",
-									"    pm.expect(responseJson.lastname).to.eql(\"Wick\");\r",
-									"    pm.expect(responseJson.phoneNumber).to.be.null;\r",
-									"    pm.expect(responseJson).to.not.have.property('password');\r",
+									"    pm.expect(responseJson.field).to.eql(\"username\");\r",
+									"    pm.expect(responseJson.detail).to.eql(\"must not be more than 32 characters\");\r",
 									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{userJwtToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8080/citizen/{{userId}}",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"citizen",
-								"{{userId}}"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Create john bis",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 201\", function () {\r",
-									"    pm.response.to.have.status(201);\r",
-									"});\r",
-									"\r",
-									"if(pm.response.code === 201){\r",
-									"    const userId = pm.response.headers.get('location').split('/')[2];\r",
-									"    const requestBody = JSON.parse(request.data);\r",
-									"    pm.variables.set('userIdBis', userId);\r",
-									"    pm.variables.set('usernameBis', requestBody.username);\r",
-									"    pm.variables.set('passwordBis', requestBody.password);\r",
-									"}\r",
-									"\r",
-									"\r",
-									"\r",
-									"\r",
-									""
 								],
 								"type": "text/javascript"
 							}
@@ -693,7 +1569,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"username\": \"john.wick.bis\",\r\n    \"firstname\" : \"John\",\r\n    \"lastname\" : \"Wick\",\r\n    \"residenceCountry\": \"France\",\r\n    \"birthdate\": \"1992-10-01\",\r\n    \"password\": \"Azertyui1\",\r\n    \"gender\": \"M\"\r\n}",
+							"raw": "{\r\n    \"username\": \"john.wick.john.wick.john.wick.john.wick.john.wick\",\r\n    \"firstname\" : \"John\",\r\n    \"lastname\" : \"Wick\",\r\n    \"residenceCountry\": \"France\",\r\n    \"birthdate\": \"1992-10-01\",\r\n    \"password\": \"Azertyui1\",\r\n    \"gender\": \"M\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -701,12 +1577,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/citizen",
-							"protocol": "http",
+							"raw": "{{hostUrl}}/citizen",
 							"host": [
-								"localhost"
+								"{{hostUrl}}"
 							],
-							"port": "8080",
 							"path": [
 								"citizen"
 							]
@@ -715,7 +1589,104 @@
 					"response": []
 				},
 				{
-					"name": "Try to use john bis username",
+					"name": "Create john",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"if(pm.response.code === 201){\r",
+									"    const userId = pm.response.headers.get('location').split('/')[2];\r",
+									"    const requestBody = JSON.parse(request.data);\r",
+									"    pm.variables.set('userId', userId);\r",
+									"    pm.variables.set('username', requestBody.username);\r",
+									"    pm.variables.set('password', requestBody.password);\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"john.wick\",\r\n    \"firstname\" : \"John\",\r\n    \"lastname\" : \"Wick\",\r\n    \"residenceCountry\": \"France\",\r\n    \"birthdate\": \"1992-10-01\",\r\n    \"password\": \"Azertyui1\",\r\n    \"gender\": \"M\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostUrl}}/citizen",
+							"host": [
+								"{{hostUrl}}"
+							],
+							"path": [
+								"citizen"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get token for john",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"if(pm.response.code === 200){\r",
+									"    pm.variables.set(\"userJwtToken\", pm.response.text());\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"{{username}}\",\r\n    \"password\": \"{{password}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostUrl}}/citizen/token",
+							"host": [
+								"{{hostUrl}}"
+							],
+							"path": [
+								"citizen",
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create john already exists",
 					"event": [
 						{
 							"listen": "test",
@@ -737,74 +1708,13 @@
 					],
 					"request": {
 						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{userJwtToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "PATCH",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"username\": \"{{usernameBis}}\",\r\n    \"firstname\": \"John\",\r\n    \"lastname\": \"Wick\",\r\n    \"gender\": \"M\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:8080/citizen/{{userId}}",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"citizen",
-								"{{userId}}"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get token for john bis",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});\r",
-									"\r",
-									"if(pm.response.code === 200){\r",
-									"    pm.variables.set(\"userJwtTokenBis\", pm.response.text());\r",
-									"}\r",
-									"\r",
-									"\r",
-									"\r",
-									"\r",
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"auth": {
 							"type": "noauth"
 						},
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"username\": \"{{usernameBis}}\",\r\n    \"password\": \"{{passwordBis}}\"\r\n}",
+							"raw": "{\r\n    \"username\": \"john.wick\",\r\n    \"firstname\" : \"John\",\r\n    \"lastname\" : \"Wick\",\r\n    \"residenceCountry\": \"France\",\r\n    \"birthdate\": \"1992-10-01\",\r\n    \"password\": \"Azertyui1\",\r\n    \"gender\": \"M\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -812,72 +1722,32 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/citizen/token",
-							"protocol": "http",
+							"raw": "{{hostUrl}}/citizen",
 							"host": [
-								"localhost"
+								"{{hostUrl}}"
 							],
-							"port": "8080",
 							"path": [
-								"citizen",
-								"token"
+								"citizen"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "Delete john bis",
+					"name": "Try use too long username",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 204\", function () {\r",
-									"    pm.response.to.have.status(204);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{userJwtTokenBis}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8080/citizen/{{userIdBis}}",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"citizen",
-								"{{userIdBis}}"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Can use john bis username",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 204\", function () {\r",
-									"    pm.response.to.have.status(204);\r",
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Error detail is present\", () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson.field).to.eql(\"username\");\r",
+									"    pm.expect(responseJson.detail).to.eql(\"must not be more than 32 characters\");\r",
 									"});"
 								],
 								"type": "text/javascript"
@@ -899,7 +1769,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"username\": \"{{usernameBis}}\",\r\n    \"firstname\": \"John\",\r\n    \"lastname\": \"Wick\",\r\n    \"gender\": \"M\"\r\n}",
+							"raw": "{\r\n    \"username\": \"azertyuiopqsdfghjklmwxcvbn0123456789\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -907,15 +1777,127 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/citizen/{{userId}}",
-							"protocol": "http",
+							"raw": "{{hostUrl}}/citizen/{{userId}}",
 							"host": [
-								"localhost"
+								"{{hostUrl}}"
 							],
-							"port": "8080",
 							"path": [
 								"citizen",
 								"{{userId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Try to update password same new",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Error detail is present\", () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson.field).to.eql(\"password\");\r",
+									"    pm.expect(responseJson.detail).to.eql(\"identical to oldPassword\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{userJwtToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"password\": \"{{password}}\",\r\n    \"oldPassword\": \"{{password}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostUrl}}/citizen/{{userId}}/password",
+							"host": [
+								"{{hostUrl}}"
+							],
+							"path": [
+								"citizen",
+								"{{userId}}",
+								"password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Try to update password wrong old",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Error detail is present\", () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson.field).to.eql(\"oldPassword\");\r",
+									"    pm.expect(responseJson.detail).to.eql(\"wrong value\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{userJwtToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"password\": \"{{password}}\",\r\n    \"oldPassword\": \"Password1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostUrl}}/citizen/{{userId}}/password",
+							"host": [
+								"{{hostUrl}}"
+							],
+							"path": [
+								"citizen",
+								"{{userId}}",
+								"password"
 							]
 						}
 					},
@@ -950,12 +1932,10 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/citizen/{{userId}}",
-							"protocol": "http",
+							"raw": "{{hostUrl}}/citizen/{{userId}}",
 							"host": [
-								"localhost"
+								"{{hostUrl}}"
 							],
-							"port": "8080",
 							"path": [
 								"citizen",
 								"{{userId}}"
@@ -985,6 +1965,16 @@
 					""
 				]
 			}
+		}
+	],
+	"variable": [
+		{
+			"key": "hostUrl",
+			"value": "http://localhost:8080"
+		},
+		{
+			"key": "expiredJohnToken",
+			"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMDQiLCJleHAiOjE2MzY2MzcyNjJ9.4I_CiIECClOu7tkFWQqbcH0HXnOSMfwcqKwaPQlHswY"
 		}
 	]
 }

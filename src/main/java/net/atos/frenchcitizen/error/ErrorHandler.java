@@ -1,5 +1,6 @@
 package net.atos.frenchcitizen.error;
 
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import net.atos.frenchcitizen.exception.FunctionalErrorException;
 import net.atos.frenchcitizen.model.Error;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -55,6 +56,10 @@ public class ErrorHandler {
             }
         } else if (ex instanceof HttpMessageConversionException) {
             builder = ResponseEntity.status(HttpStatus.BAD_REQUEST);
+            if (ex.getCause() instanceof InvalidFormatException) {
+                errorResponse.setField(((InvalidFormatException) ex.getCause()).getPath().get(0).getFieldName());
+                errorResponse.setDetail(((InvalidFormatException) ex.getCause()).getValue().toString());
+            }
             if (Objects.requireNonNull(ex.getMessage()).startsWith("Required request body is missing")) {
                 errorResponse.setField("body");
                 errorResponse.setDetail("must not be null");

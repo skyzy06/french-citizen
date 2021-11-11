@@ -6,6 +6,7 @@ import lombok.ToString;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
 @Data
@@ -14,6 +15,7 @@ public class CitizenCreationRequest {
 
     @ToString.Include
     @NotEmpty
+    @Size(max = 32, message = "must not be more than 32 characters")
     public String username;
 
     @NotNull
