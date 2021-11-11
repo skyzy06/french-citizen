@@ -418,7 +418,7 @@ public class CitizenControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)).andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.field").isEmpty())
-                .andExpect(jsonPath("$.detail").value("No citizen founded"))
+                .andExpect(jsonPath("$.detail").value("This citizen does not exist"))
                 .andReturn();
     }
 

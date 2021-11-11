@@ -13,13 +13,13 @@ public class CitizenUpdateRequest {
     @ToString.Include
     @NotEmpty
     @Size(max = 32, message = "must not be more than 32 characters")
-    public String username;
+    private String username;
 
-    public String firstname;
+    private String firstname;
 
-    public String lastname;
+    private String lastname;
 
-    public String phoneNumber;
+    private String phoneNumber;
 
-    public Gender gender;
+    private Gender gender;
 }

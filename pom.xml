@@ -20,6 +20,8 @@
 		<maven-compiler.version>3.8.1</maven-compiler.version>
 		<awaitility.version>4.1.1</awaitility.version>
 		<auth-jwt.version>3.18.2</auth-jwt.version>
+		<lombok.version>1.18.22</lombok.version>
+		<lombok-mapstruct.version>0.2.0</lombok-mapstruct.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -102,7 +104,12 @@
 						<path>
 							<groupId>org.projectlombok</groupId>
 							<artifactId>lombok</artifactId>
-							<version>1.18.22</version>
+							<version>${lombok.version}</version>
+						</path>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok-mapstruct-binding</artifactId>
+							<version>${lombok-mapstruct.version}</version>
 						</path>
 					</annotationProcessorPaths>
 				</configuration>

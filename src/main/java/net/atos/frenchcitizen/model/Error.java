@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class Error {
-    public String field;
-    public String detail;
+    private String field;
+    private String detail;
 }

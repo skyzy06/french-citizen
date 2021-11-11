@@ -22,6 +22,7 @@ public class LoggingAspect {
     @Pointcut("within(net.atos.frenchcitizen.service..*)" +
             " || within(net.atos.frenchcitizen.controller..*)")
     public void applicationPackagePointcut() {
+        // Method is empty as this is just a Pointcut
     }
 
     /**

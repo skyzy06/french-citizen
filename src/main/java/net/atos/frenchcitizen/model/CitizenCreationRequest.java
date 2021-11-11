@@ -16,26 +16,26 @@ public class CitizenCreationRequest {
     @ToString.Include
     @NotEmpty
     @Size(max = 32, message = "must not be more than 32 characters")
-    public String username;
+    private String username;
 
     @NotNull
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$",
             message = "Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and no special character")
-    public String password;
+    private String password;
 
-    public String firstname;
+    private String firstname;
 
-    public String lastname;
+    private String lastname;
 
-    public String phoneNumber;
-
-    @NotNull
-    public LocalDate birthdate;
+    private String phoneNumber;
 
     @NotNull
-    public String residenceCountry;
+    private LocalDate birthdate;
 
-    public Gender gender;
+    @NotNull
+    private String residenceCountry;
+
+    private Gender gender;
 
     public boolean isFrenchCitizen() {
         java.util.regex.Pattern frenchPattern = java.util.regex.Pattern.compile("^(France)$", java.util.regex.Pattern.CASE_INSENSITIVE);

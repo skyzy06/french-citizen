@@ -17,7 +17,7 @@ import java.util.Base64;
 @Component
 public class PasswordHelper {
 
-    private static SecretKeySpec secretKey;
+    private SecretKeySpec secretKey;
     @Value("${encryption.password.key}")
     private String encryptionKey;
 

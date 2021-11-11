@@ -13,19 +13,19 @@ public class CitizenResponse {
 
     @ToString.Include
     @NotEmpty
-    public String username;
+    private String username;
 
-    public String firstname;
+    private String firstname;
 
-    public String lastname;
+    private String lastname;
 
-    public String phoneNumber;
-
-    @NotNull
-    public LocalDate birthdate;
+    private String phoneNumber;
 
     @NotNull
-    public String residenceCountry;
+    private LocalDate birthdate;
 
-    public Gender gender;
+    @NotNull
+    private String residenceCountry;
+
+    private Gender gender;
 }

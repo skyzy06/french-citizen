@@ -10,5 +10,5 @@ public enum Gender {
     U("Unknown");
 
     @Getter
-    public String value;
+    private String value;
 }
