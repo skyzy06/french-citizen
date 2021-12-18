@@ -51,7 +51,8 @@ The following information about a citizen cannot be change after its registratio
 * country of residence
 
 ## API
-Here are some template of requests. A more detailed collection can be found here: [Postman collection](postman/french-citizen.postman_collection.json)
+Here are some template of requests. A more detailed collection can be found here: [Postman collection](postman/french-citizen.postman_collection.json). You can also try it with its swagger at http://localhost:8080/swager-ui/ when the server is running.
+
 Only the creation and retrieve token endpoints are open to anyone, otherwise you need a token that match with the requested citizen.
 ### Register / creation
 ```

@@ -1,5 +1,6 @@
 package net.atos.frenchcitizen.controller;
 
+import io.swagger.annotations.Api;
 import net.atos.frenchcitizen.aop.security.Secured;
 import net.atos.frenchcitizen.exception.BadRequestException;
 import net.atos.frenchcitizen.exception.ConflictException;
@@ -20,6 +21,7 @@ import java.util.Optional;
 import static net.atos.frenchcitizen.controller.ControllerMsgConstants.*;
 
 @RestController
+@Api(value = "Citizen API", tags = {"Citizen"})
 public class CitizenController {
 
     private final CitizenService citizenService;
