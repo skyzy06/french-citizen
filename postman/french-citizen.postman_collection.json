@@ -611,7 +611,7 @@
 											"pm.test(\"Error detail is present\", () => {\r",
 											"    const responseJson = pm.response.json();\r",
 											"    pm.expect(responseJson.field).to.be.null;\r",
-											"    pm.expect(responseJson.detail).to.eql(\"Unauthorized access\");\r",
+											"    pm.expect(responseJson.detail).to.eql(\"Invalid authorization header\");\r",
 											"});"
 										],
 										"type": "text/javascript"
