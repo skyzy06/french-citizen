@@ -6,12 +6,17 @@ import net.atos.frenchcitizen.exception.BadRequestException;
 import net.atos.frenchcitizen.exception.ConflictException;
 import net.atos.frenchcitizen.exception.ForbiddenException;
 import net.atos.frenchcitizen.exception.NotFoundException;
-import net.atos.frenchcitizen.helper.PasswordHelper;
 import net.atos.frenchcitizen.helper.TokenHelper;
 import net.atos.frenchcitizen.mapper.CitizenMapper;
 import net.atos.frenchcitizen.model.*;
 import net.atos.frenchcitizen.service.CitizenService;
+import net.atos.frenchcitizen.service.UserDetailsImpl;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -27,14 +32,17 @@ public class CitizenController {
     private final CitizenService citizenService;
     private final CitizenMapper citizenMapper;
     private final TokenHelper tokenHelper;
-    private final PasswordHelper passwordHelper;
+    private final AuthenticationManager authenticationManager;
+    private final PasswordEncoder passwordEncoder;
 
     public CitizenController(CitizenService citizenService, CitizenMapper citizenMapper,
-                             TokenHelper tokenHelper, PasswordHelper passwordHelper) {
+                             TokenHelper tokenHelper, PasswordEncoder passwordEncoder,
+                             AuthenticationManager authenticationManager) {
         this.citizenService = citizenService;
         this.citizenMapper = citizenMapper;
         this.tokenHelper = tokenHelper;
-        this.passwordHelper = passwordHelper;
+        this.passwordEncoder = passwordEncoder;
+        this.authenticationManager = authenticationManager;
     }
 
     @PostMapping("/citizen")
@@ -48,7 +56,7 @@ public class CitizenController {
         if (citizenService.existsByUsername(requestBody.getUsername())) {
             throw new ConflictException("username", USERNAME_ALREADY_EXISTS);
         }
-        String encryptedPassword = passwordHelper.encrypt(requestBody.getPassword());
+        String encryptedPassword = passwordEncoder.encode(requestBody.getPassword());
         requestBody.setPassword(encryptedPassword);
         Citizen citizen = citizenService.save(citizenMapper.toCitizen(requestBody));
         return ResponseEntity.created(URI.create("/citizen/" + citizen.getId())).build();
@@ -56,14 +64,18 @@ public class CitizenController {
 
     @PostMapping("/citizen/token")
     public ResponseEntity<String> requestToken(@Valid @RequestBody CitizenTokenRequest requestBody) {
-        Citizen citizen = citizenService.findCitizenByUsername(requestBody.getUsername()).orElseThrow(() -> new BadRequestException(null, BAD_CREDENTIALS));
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(requestBody.getUsername(), requestBody.getPassword()));
 
-        String savedPassword = passwordHelper.decrypt(citizen.getPassword());
-        if (!requestBody.getPassword().equals(savedPassword)) {
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+            String token = tokenHelper.encode(userDetails.getId());
+            return ResponseEntity.ok(token);
+        } catch (Exception e) {
             throw new BadRequestException(null, BAD_CREDENTIALS);
         }
-        String token = tokenHelper.encode(citizen.getId());
-        return ResponseEntity.ok(token);
     }
 
     @Secured
@@ -99,13 +111,12 @@ public class CitizenController {
         }
         Citizen citizen = citizenService.findCitizenById(id).orElseThrow(() -> new NotFoundException(null, UNKNOW_CITIZEN));
 
-        String savedPassword = passwordHelper.decrypt(citizen.getPassword());
-        if (!requestBody.getOldPassword().equals(savedPassword)) {
+        if (!passwordEncoder.matches(requestBody.getOldPassword(), citizen.getPassword())) {
             throw new BadRequestException("oldPassword", BAD_OLD_PASSWORD);
         }
 
-        String encryptedPassword = passwordHelper.encrypt(requestBody.getPassword());
-        citizen.setPassword(encryptedPassword);
+        String encodedPassword = passwordEncoder.encode(requestBody.getPassword());
+        citizen.setPassword(encodedPassword);
         citizenService.save(citizen);
         return ResponseEntity.noContent().build();
     }
