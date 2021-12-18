@@ -39,12 +39,8 @@ public class SecuredAspect {
     }
 
     private void checkAccess(String id) {
-        String authHeader = getAuthorizationBearer();
-        if (authHeader == null) {
-            throw new UnauthorizedException(null, "Invalid authorization header");
-        }
-        DecodedJWT jwt = tokenHelper.decode(authHeader);
-        if (!tokenHelper.isValid(jwt) || !jwt.getSubject().equals(id)) {
+        DecodedJWT jwt = tokenHelper.decode(getAuthorizationBearer());
+        if (!jwt.getSubject().equals(id)) {
             throw new UnauthorizedException(null, "Unauthorized access");
         }
     }
@@ -54,8 +50,7 @@ public class SecuredAspect {
         if (servletRequest == null) {
             return null;
         }
-        String authHeader = servletRequest.getHeader(AUTHORIZATION_HEADER);
-        return authHeader == null ? null : authHeader.substring(TOKEN_BEARER_PREFIX.length());
+        return servletRequest.getHeader(AUTHORIZATION_HEADER).substring(TOKEN_BEARER_PREFIX.length());
     }
 
     private HttpServletRequest getCurrentHttpRequest() {

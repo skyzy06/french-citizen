@@ -1,4 +1,4 @@
-package net.atos.frenchcitizen.error;
+package net.atos.frenchcitizen.handler;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import net.atos.frenchcitizen.exception.FunctionalErrorException;
