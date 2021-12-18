@@ -201,8 +201,6 @@ public class CitizenControllerTest {
 
     @Test
     public void testRequestTokenMissingField() throws Exception {
-        Citizen citizen = createCitizen();
-
         CitizenTokenRequest request = new CitizenTokenRequest();
         request.setPassword(TEST_PASSWORD);
 

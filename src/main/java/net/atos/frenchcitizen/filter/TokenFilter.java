@@ -2,7 +2,6 @@ package net.atos.frenchcitizen.filter;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import net.atos.frenchcitizen.exception.NotFoundException;
-import net.atos.frenchcitizen.exception.UnauthorizedException;
 import net.atos.frenchcitizen.helper.TokenHelper;
 import net.atos.frenchcitizen.model.Citizen;
 import net.atos.frenchcitizen.service.CitizenService;
